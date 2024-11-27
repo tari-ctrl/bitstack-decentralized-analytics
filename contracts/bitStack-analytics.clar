@@ -40,3 +40,39 @@
         minimum-votes: uint
     }
 )
+
+(define-map UserPositions
+    principal
+    {
+        total-collateral: uint,
+        total-debt: uint,
+        health-factor: uint,
+        last-updated: uint,
+        stx-staked: uint,
+        analytics-tokens: uint,
+        voting-power: uint,
+        tier-level: uint,
+        rewards-multiplier: uint
+    }
+)
+
+(define-map StakingPositions
+    principal
+    {
+        amount: uint,
+        start-block: uint,
+        last-claim: uint,
+        lock-period: uint,
+        cooldown-start: (optional uint),
+        accumulated-rewards: uint
+    }
+)
+
+(define-map TierLevels
+    uint
+    {
+        minimum-stake: uint,
+        reward-multiplier: uint,
+        features-enabled: (list 10 bool)
+    }
+)
