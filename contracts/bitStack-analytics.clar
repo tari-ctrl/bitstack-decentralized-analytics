@@ -76,3 +76,33 @@
         features-enabled: (list 10 bool)
     }
 )
+
+;; public functions
+
+;; Initializes the contract and sets up the tier levels
+(define-public (initialize-contract)
+    (begin
+        (asserts! (is-eq tx-sender CONTRACT-OWNER) ERR-NOT-AUTHORIZED)
+        
+        ;; Set up tier levels
+        (map-set TierLevels u1 
+            {
+                minimum-stake: u1000000,  ;; 1M uSTX
+                reward-multiplier: u100,  ;; 1x
+                features-enabled: (list true false false false false false false false false false)
+            })
+        (map-set TierLevels u2
+            {
+                minimum-stake: u5000000,  ;; 5M uSTX
+                reward-multiplier: u150,  ;; 1.5x
+                features-enabled: (list true true true false false false false false false false)
+            })
+        (map-set TierLevels u3
+            {
+                minimum-stake: u10000000, ;; 10M uSTX
+                reward-multiplier: u200,  ;; 2x
+                features-enabled: (list true true true true true false false false false false)
+            })
+        (ok true)
+    )
+)
