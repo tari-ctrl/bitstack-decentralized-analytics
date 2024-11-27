@@ -194,3 +194,22 @@
         (ok true)
     )
 )
+
+;; Completes the unstaking process after the cooldown period
+(define-public (complete-unstake)
+    (let
+        (
+            (staking-position (unwrap! (map-get? StakingPositions tx-sender) ERR-NO-STAKE))
+            (cooldown-start (unwrap! (get cooldown-start staking-position) ERR-NOT-AUTHORIZED))
+        )
+        (asserts! (>= (- block-height cooldown-start) (var-get cooldown-period)) ERR-COOLDOWN-ACTIVE)
+        
+        ;; Transfer STX back to user
+        (try! (as-contract (stx-transfer? (get amount staking-position) tx-sender tx-sender)))
+        
+        ;; Clear staking position
+        (map-delete StakingPositions tx-sender)
+        
+        (ok true)
+    )
+)
