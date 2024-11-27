@@ -171,3 +171,26 @@
         )
     )
 )
+
+;; Initiates the unstaking process by setting a cooldown period
+(define-public (initiate-unstake (amount uint))
+    (let
+        (
+            (staking-position (unwrap! (map-get? StakingPositions tx-sender) ERR-NO-STAKE))
+            (current-amount (get amount staking-position))
+        )
+        (asserts! (>= current-amount amount) ERR-INSUFFICIENT-STX)
+        (asserts! (is-none (get cooldown-start staking-position)) ERR-COOLDOWN-ACTIVE)
+        
+        ;; Update staking position with cooldown
+        (map-set StakingPositions
+            tx-sender
+            (merge staking-position
+                {
+                    cooldown-start: (some block-height)
+                }
+            )
+        )
+        (ok true)
+    )
+)
