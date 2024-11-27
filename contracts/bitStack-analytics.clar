@@ -325,3 +325,25 @@
         )
     )
 )
+
+;; Calculates the rewards for a user based on their stake and the number of blocks
+(define-private (calculate-rewards (user principal) (blocks uint))
+    (let
+        (
+            (staking-position (unwrap! (map-get? StakingPositions user) u0))
+            (user-position (unwrap! (map-get? UserPositions user) u0))
+            (stake-amount (get amount staking-position))
+            (base-rate (var-get base-reward-rate))
+            (multiplier (get rewards-multiplier user-position))
+        )
+        (/ (* (* (* stake-amount base-rate) multiplier) blocks) u14400000)
+    )
+)
+
+;; Validates the proposal description length
+(define-private (is-valid-description (desc (string-utf8 256)))
+    (and 
+        (>= (len desc) u10)   ;; Minimum description length
+        (<= (len desc) u256)  ;; Maximum description length
+    )
+)
